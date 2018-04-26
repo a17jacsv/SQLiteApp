@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SQLiteApp</string>
+    <string name="action_refresh">Refresh</string>
 </resources>
