@@ -14,7 +14,17 @@ public class MountainReaderContract {
 
     // Inner class that defines the Mountain table contents
     public static class MountainEntry implements BaseColumns {
-        // TODO:
+        public static final String TABLE_NAME = "MOUNTAINFACTS";
+        public static final String COLUMN_NAME_NAME = "NAME";
+        public static final String COLUMN_NAME_LOCATION = "LOCATION";
+        public static final String COLUMN_NAME_HEIGHT = "HEIGHT";
     }
+
+    public static final String SQL_CREATE_ENTRIES =
+            "CREATE TABLE " + MountainEntry.TABLE_NAME + " (" +
+                    MountainEntry._ID + " INTEGER PRIMARY KEY," +
+                    MountainEntry.COLUMN_NAME_NAME + " TEXT," +
+                    MountainEntry.COLUMN_NAME_LOCATION + " TEXT," +
+                    MountainEntry.COLUMN_NAME_HEIGHT + " INTEGER" + ") ";
 
 }

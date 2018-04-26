@@ -1,7 +1,11 @@
 package org.brohede.marcus.sqliteapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.provider.BaseColumns;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +28,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
+import static java.security.AccessController.getContext;
 import static org.brohede.marcus.sqliteapp.R.id.list_view;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,11 +38,62 @@ public class MainActivity extends AppCompatActivity {
     protected ArrayList<GetMountains> mountainlist = new ArrayList<>();
     ListView myListView;
 
+    MountainReaderDbHelper mDbHelper;
+
+    SQLiteDatabase db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MountainReaderDbHelper mDbHelper = new MountainReaderDbHelper(this);
+
+        // Gets the data repository in write mode
+        db = mDbHelper.getWritableDatabase();
+
+
+        SQLiteDatabase db1 = mDbHelper.getReadableDatabase();
+
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                BaseColumns._ID,
+                MountainReaderContract.MountainEntry.COLUMN_NAME_NAME,
+                MountainReaderContract.MountainEntry.COLUMN_NAME_LOCATION,
+                MountainReaderContract.MountainEntry.COLUMN_NAME_HEIGHT
+        };
+
+        // Filter results WHERE "title" = 'My Title'
+        String selection = MountainReaderContract.MountainEntry.COLUMN_NAME_NAME + " = ?";
+        String[] selectionArgs = { "Aconcagua" };
+
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder =
+                MountainReaderContract.MountainEntry.COLUMN_NAME_LOCATION  + " DESC";
+
+        Cursor cursor = db1.query(
+                MountainReaderContract.MountainEntry.TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                selection,              // The columns for the WHERE clause
+                selectionArgs,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                sortOrder               // The sort order
+
+        );
+
+        Log.d("testkebe", cursor.toString());
+
+        List itemIds = new ArrayList<>();
+        while(cursor.moveToNext()) {
+            long itemId = cursor.getLong(
+                    cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry._ID));
+                Log.d("testkebe", cursor.getString(cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry.COLUMN_NAME_NAME)));
+            itemIds.add(itemId);
+        }
+        cursor.close();
 
         Brorsan getJson = new Brorsan();
         getJson.execute();
@@ -46,10 +103,9 @@ public class MainActivity extends AppCompatActivity {
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                
+
             }
         });
-
 
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -59,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     @Override
@@ -105,9 +160,16 @@ public class MainActivity extends AppCompatActivity {
                     String auxdata = mountain.getString("auxdata");
                     JSONObject aux = new JSONObject(auxdata);
                     String url = aux.getString("img");
+
                     GetMountains m = new GetMountains(name, height, location, url);
                     mountainlist.add(m);
 
+                    ContentValues values = new ContentValues();
+                    values.put(MountainReaderContract.MountainEntry.COLUMN_NAME_NAME, name);
+                    values.put(MountainReaderContract.MountainEntry.COLUMN_NAME_LOCATION, location);
+                    values.put(MountainReaderContract.MountainEntry.COLUMN_NAME_HEIGHT, height);
+
+                    db.insert(MountainReaderContract.MountainEntry.TABLE_NAME, null, values);
                 }
             }
             catch (JSONException e) {
