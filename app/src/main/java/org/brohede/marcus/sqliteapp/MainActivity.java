@@ -38,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
     protected ArrayList<GetMountains> mountainlist = new ArrayList<>();
     ListView myListView;
 
+    private ArrayAdapter adapter;
     MountainReaderDbHelper mDbHelper;
+
 
     SQLiteDatabase db;
 
@@ -54,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
         // Gets the data repository in write mode
         db = mDbHelper.getWritableDatabase();
 
+        adapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item_textview, R.id.my_item_textview, mountainlist);
+
+        myListView = (ListView)findViewById(list_view);
+        myListView.setAdapter(adapter);
 
         Brorsan getJson = new Brorsan();
         getJson.execute();
@@ -118,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("testkebe", cursor.toString());
 
+        adapter.clear();
+
         List itemIds = new ArrayList<>();
         while(cursor.moveToNext()) {
             long itemId = cursor.getLong(
@@ -174,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                     String url = aux.getString("img");
 
                     GetMountains m = new GetMountains(name, height, location, url);
-                    mountainlist.add(m);
+                    adapter.add(m);
 
                     ContentValues values = new ContentValues();
                     values.put(MountainReaderContract.MountainEntry.COLUMN_NAME_NAME, name);
@@ -190,11 +198,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
-            ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item_textview, R.id.my_item_textview, mountainlist);
-
-            myListView = (ListView)findViewById(list_view);
-            myListView.setAdapter(adapter);
         }
 
         @Override
