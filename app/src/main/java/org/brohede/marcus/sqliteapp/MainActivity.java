@@ -49,54 +49,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MountainReaderDbHelper mDbHelper = new MountainReaderDbHelper(this);
+        mDbHelper = new MountainReaderDbHelper(this);
 
         // Gets the data repository in write mode
         db = mDbHelper.getWritableDatabase();
 
-
-        SQLiteDatabase db1 = mDbHelper.getReadableDatabase();
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                BaseColumns._ID,
-                MountainReaderContract.MountainEntry.COLUMN_NAME_NAME,
-                MountainReaderContract.MountainEntry.COLUMN_NAME_LOCATION,
-                MountainReaderContract.MountainEntry.COLUMN_NAME_HEIGHT,
-                MountainReaderContract.MountainEntry.COLUMN_NAME_IMAGEURL,
-                MountainReaderContract.MountainEntry.COLUMN_NAME_WIKIURL
-        };
-
-        // Filter results WHERE "title" = 'My Title'
-        String selection = MountainReaderContract.MountainEntry.COLUMN_NAME_NAME + " = ?";
-        String[] selectionArgs = { "Aconcagua" };
-
-        // How you want the results sorted in the resulting Cursor
-        String sortOrder =
-                MountainReaderContract.MountainEntry.COLUMN_NAME_LOCATION  + " DESC";
-
-        Cursor cursor = db1.query(
-                MountainReaderContract.MountainEntry.TABLE_NAME,   // The table to query
-                projection,             // The array of columns to return (pass null to get all)
-                selection,              // The columns for the WHERE clause
-                selectionArgs,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                sortOrder               // The sort order
-
-        );
-
-        Log.d("testkebe", cursor.toString());
-
-        List itemIds = new ArrayList<>();
-        while(cursor.moveToNext()) {
-            long itemId = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry._ID));
-                Log.d("testkebe", cursor.getString(cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry.COLUMN_NAME_NAME)));
-            itemIds.add(itemId);
-        }
-        cursor.close();
 
         Brorsan getJson = new Brorsan();
         getJson.execute();
@@ -126,6 +83,51 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void testmethod() {
+        SQLiteDatabase db1 = mDbHelper.getReadableDatabase();
+
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                BaseColumns._ID,
+                MountainReaderContract.MountainEntry.COLUMN_NAME_NAME,
+                MountainReaderContract.MountainEntry.COLUMN_NAME_LOCATION,
+                MountainReaderContract.MountainEntry.COLUMN_NAME_HEIGHT,
+                MountainReaderContract.MountainEntry.COLUMN_NAME_IMAGEURL,
+                MountainReaderContract.MountainEntry.COLUMN_NAME_WIKIURL
+        };
+
+        // Filter results WHERE "title" = 'My Title'
+        String selection = MountainReaderContract.MountainEntry.COLUMN_NAME_NAME + " = ?";
+        String[] selectionArgs = { "K2" };
+
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder =
+                MountainReaderContract.MountainEntry.COLUMN_NAME_LOCATION  + " DESC";
+
+        Cursor cursor = db1.query(
+                MountainReaderContract.MountainEntry.TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                selection,              // The columns for the WHERE clause
+                selectionArgs,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                sortOrder               // The sort order
+
+        );
+
+        Log.d("testkebe", cursor.toString());
+
+        List itemIds = new ArrayList<>();
+        while(cursor.moveToNext()) {
+            long itemId = cursor.getLong(
+                    cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry._ID));
+            Log.d("testkebe", cursor.getString(cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry.COLUMN_NAME_NAME)));
+            itemIds.add(itemId);
+        }
+        cursor.close();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -134,6 +136,13 @@ public class MainActivity extends AppCompatActivity {
             mountainlist.clear();
             new Brorsan().execute();
             Toast refreshed = Toast.makeText(this, "List have been refreshed", Toast.LENGTH_SHORT);
+            refreshed.show();
+
+            return true;
+        }
+        if (id == R.id.action_test) {
+            testmethod();
+            Toast refreshed = Toast.makeText(this, "List have been tested", Toast.LENGTH_SHORT);
             refreshed.show();
 
             return true;
