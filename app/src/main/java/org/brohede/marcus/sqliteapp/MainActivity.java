@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         };
 
         // Filter results WHERE "title" = 'My Title'
-        String selection = MountainReaderContract.MountainEntry.COLUMN_NAME_NAME + " = ?";
-        String[] selectionArgs = { "K2" };
+        //String selection = MountainReaderContract.MountainEntry.COLUMN_NAME_NAME + " = ?";
+        //String[] selectionArgs = { "K2" };
 
         // How you want the results sorted in the resulting Cursor
         String sortOrder =
@@ -114,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = db1.query(
                 MountainReaderContract.MountainEntry.TABLE_NAME,   // The table to query
                 projection,             // The array of columns to return (pass null to get all)
-                selection,              // The columns for the WHERE clause
-                selectionArgs,          // The values for the WHERE clause
+                null,              // The columns for the WHERE clause
+                null,          // The values for the WHERE clause
                 null,                   // don't group the rows
                 null,                   // don't filter by row groups
                 sortOrder               // The sort order
@@ -126,12 +126,17 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.clear();
 
-        List itemIds = new ArrayList<>();
         while(cursor.moveToNext()) {
-            long itemId = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry._ID));
-            Log.d("testkebe", cursor.getString(cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry.COLUMN_NAME_NAME)));
-            itemIds.add(itemId);
+                    cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry._ID);
+            String mountainname = cursor.getString(cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry.COLUMN_NAME_NAME));
+            int mountainheight = cursor.getInt(cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry.COLUMN_NAME_HEIGHT));
+            String mountainlocation = cursor.getString(cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry.COLUMN_NAME_LOCATION));
+            String mountainimageurl = cursor.getString(cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry.COLUMN_NAME_IMAGEURL));
+            String mountainwikiurl = cursor.getString(cursor.getColumnIndexOrThrow(MountainReaderContract.MountainEntry.COLUMN_NAME_WIKIURL));
+
+            GetMountains berg = new GetMountains(mountainname, mountainheight, mountainlocation, mountainimageurl, mountainwikiurl);
+
+            adapter.add(berg);
         }
         cursor.close();
     }
@@ -181,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject aux = new JSONObject(auxdata);
                     String url = aux.getString("img");
 
-                    GetMountains m = new GetMountains(name, height, location, url);
+                    GetMountains m = new GetMountains(name, height, location, url, auxdata);
                     adapter.add(m);
 
                     ContentValues values = new ContentValues();

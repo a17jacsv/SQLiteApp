@@ -10,7 +10,7 @@ public class GetMountains {
     private String location;
 
     public GetMountains(String name, int height, String location,
-                     String url) {
+                     String url, String auxdata) {
         this.name=name;
         this.height=height;
         this.location=location;

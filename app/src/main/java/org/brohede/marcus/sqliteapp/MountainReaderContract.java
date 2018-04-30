@@ -25,7 +25,7 @@ public class MountainReaderContract {
     public static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + MountainEntry.TABLE_NAME + " (" +
                     MountainEntry._ID + " INTEGER PRIMARY KEY," +
-                    MountainEntry.COLUMN_NAME_NAME + " TEXT," +
+                    MountainEntry.COLUMN_NAME_NAME + " TEXT not null unique, " +
                     MountainEntry.COLUMN_NAME_LOCATION + " TEXT," +
                     MountainEntry.COLUMN_NAME_HEIGHT + " INTEGER," +
                     MountainEntry.COLUMN_NAME_IMAGEURL + " TEXT," +
