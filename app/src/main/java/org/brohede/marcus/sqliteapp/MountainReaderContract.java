@@ -18,6 +18,8 @@ public class MountainReaderContract {
         public static final String COLUMN_NAME_NAME = "NAME";
         public static final String COLUMN_NAME_LOCATION = "LOCATION";
         public static final String COLUMN_NAME_HEIGHT = "HEIGHT";
+        public static final String COLUMN_NAME_IMAGEURL = "IMAGEURL";
+        public static final String COLUMN_NAME_WIKIURL = "WIKIURL";
     }
 
     public static final String SQL_CREATE_ENTRIES =
@@ -25,6 +27,8 @@ public class MountainReaderContract {
                     MountainEntry._ID + " INTEGER PRIMARY KEY," +
                     MountainEntry.COLUMN_NAME_NAME + " TEXT," +
                     MountainEntry.COLUMN_NAME_LOCATION + " TEXT," +
-                    MountainEntry.COLUMN_NAME_HEIGHT + " INTEGER" + ") ";
+                    MountainEntry.COLUMN_NAME_HEIGHT + " INTEGER," +
+                    MountainEntry.COLUMN_NAME_IMAGEURL + " TEXT," +
+                    MountainEntry.COLUMN_NAME_WIKIURL + " TEXT" + ") ";
 
 }

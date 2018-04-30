@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("jacobsdata", MountainReaderContract.SQL_CREATE_ENTRIES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -62,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
                 BaseColumns._ID,
                 MountainReaderContract.MountainEntry.COLUMN_NAME_NAME,
                 MountainReaderContract.MountainEntry.COLUMN_NAME_LOCATION,
-                MountainReaderContract.MountainEntry.COLUMN_NAME_HEIGHT
+                MountainReaderContract.MountainEntry.COLUMN_NAME_HEIGHT,
+                MountainReaderContract.MountainEntry.COLUMN_NAME_IMAGEURL,
+                MountainReaderContract.MountainEntry.COLUMN_NAME_WIKIURL
         };
 
         // Filter results WHERE "title" = 'My Title'
@@ -168,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
                     values.put(MountainReaderContract.MountainEntry.COLUMN_NAME_NAME, name);
                     values.put(MountainReaderContract.MountainEntry.COLUMN_NAME_LOCATION, location);
                     values.put(MountainReaderContract.MountainEntry.COLUMN_NAME_HEIGHT, height);
+                    values.put(MountainReaderContract.MountainEntry.COLUMN_NAME_WIKIURL, url);
+                    values.put(MountainReaderContract.MountainEntry.COLUMN_NAME_IMAGEURL, auxdata);
 
                     db.insert(MountainReaderContract.MountainEntry.TABLE_NAME, null, values);
                 }
